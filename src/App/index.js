@@ -1,12 +1,11 @@
 import React from 'react';
-import { GlobalStyle } from './styles';
+import * as S from './styles';
 
 function App() {
   return (
-    <>
-      <GlobalStyle />
+    <S.Container>
       <h1>Olá!</h1>
-    </>
+    </S.Container>
   );
 }
 
