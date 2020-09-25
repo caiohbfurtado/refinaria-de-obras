@@ -1,5 +1,15 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { darken } from 'polished';
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to{
+    transform: rotate(360deg)
+  }
+`;
 
 export const Container = styled.div`
   display: flex;
@@ -98,4 +108,20 @@ export const Button = styled.button.attrs({ type: 'button' })`
 export const Total = styled.span`
   display: ${({ total }) => (total ? 'flex' : 'none')};
   margin-left: 10px;
+`;
+
+export const NoResults = styled.h3`
+  margin: 25px 0;
+`;
+
+export const Loading = styled.div`
+  ${({ loading }) =>
+    loading &&
+    css`
+      margin: 25px 0;
+      svg {
+        font-size: 40px;
+        animation: ${rotate} 2s linear infinite;
+      }
+    `}
 `;

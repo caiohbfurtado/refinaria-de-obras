@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+import { FaSpinner } from 'react-icons/fa';
 
 import api from '../services/api';
 
@@ -14,48 +15,36 @@ function App() {
   const [title, setTitle] = useState('');
   const [films, setFilms] = useState([]);
   const [page, setPage] = useState(1);
-  const [next, setNext] = useState(false);
   const [total, setTotal] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const response = await api.get(
-        `${title}&plot=short&type=${type}&page=${page}`
-      );
-
-      if (response.data.Search) {
-        setFilms(response.data.Search);
-      }
-    })();
-
-    (async () => {
-      const pages = await api.get(
-        `${title}&plot=short&type=${type}&page=${page + 1}`
-      );
-
-      if (!pages.data.Search) {
-        setNext(false);
-      } else {
-        setNext(true);
-      }
+      setLoading(true);
+      await api
+        .get(`${title}&plot=short&type=${type}&page=${page}`)
+        .then((res) => {
+          setLoading(false);
+          if (res.data.Search) {
+            setFilms(res.data.Search);
+          }
+        })
+        .catch(() => {
+          setLoading(false);
+        });
     })();
   }, [page]);
 
   const handleSearch = async () => {
-    const response = await api.get(`${title}&plot=short&type=${type}&page=3`);
-    const pages = await api.get(
-      `${title}&plot=short&type=${type}&page=${page + 1}`
-    );
-    if (!pages.data.Search) {
-      setNext(false);
-    } else {
-      setNext(true);
-    }
-
-    if (response.data) {
-      setFilms(response.data.Search);
-      setTotal(response.data.totalResults);
-    }
+    setLoading(true);
+    await api
+      .get(`${title}&plot=short&type=${type}&page=3`)
+      .then((res) => {
+        setLoading(false);
+        setFilms(res.data.Search);
+        setTotal(res.data.totalResults);
+      })
+      .catch(() => setLoading(false));
   };
 
   return (
@@ -92,31 +81,50 @@ function App() {
           resultados da busca{' '}
           <S.Total total={total}>{total} resultados</S.Total>
         </Title>
+        {loading ? (
+          <S.Loading loading={loading}>
+            <FaSpinner />
+          </S.Loading>
+        ) : (
+          <>
+            {!films && <S.NoResults>Título não encontrado!</S.NoResults>}
 
-        {films !== undefined && (
-          <S.List>
-            {films.length > 0 &&
-              films.map((item) => (
-                <ItemResult title={item.Title} year={item.Year} />
-              ))}
-          </S.List>
-        )}
+            {films !== undefined && (
+              <S.List>
+                {films.length > 0 &&
+                  films.map((item) => (
+                    <ItemResult
+                      title={item.Title}
+                      year={item.Year}
+                      key={item.imdbID}
+                    />
+                  ))}
+              </S.List>
+            )}
 
-        {films !== undefined && films.length > 0 && (
-          <S.Footer>
-            <S.Button disabled={page === 1} onClick={() => setPage(page - 1)}>
-              <MdKeyboardArrowLeft />
-              Página Anterior
-            </S.Button>
+            {films !== undefined && films.length > 0 && (
+              <S.Footer>
+                <S.Button
+                  disabled={page === 1}
+                  onClick={() => setPage(page - 1)}
+                >
+                  <MdKeyboardArrowLeft />
+                  Página Anterior
+                </S.Button>
 
-            <p>
-              pág. {page} de {Math.ceil(Number(total) / 10)}
-            </p>
+                <p>
+                  pág. {page} de {Math.ceil(Number(total) / 10)}
+                </p>
 
-            <S.Button disabled={!next} onClick={() => setPage(page + 1)}>
-              Próxima página <MdKeyboardArrowRight />
-            </S.Button>
-          </S.Footer>
+                <S.Button
+                  disabled={page >= Math.ceil(Number(total) / 10)}
+                  onClick={() => setPage(page + 1)}
+                >
+                  Próxima página <MdKeyboardArrowRight />
+                </S.Button>
+              </S.Footer>
+            )}
+          </>
         )}
       </S.ResultsContainer>
     </S.Container>
