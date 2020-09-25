@@ -6,4 +6,8 @@ export const Title = styled.h1`
   font-size: 28px;
   text-transform: uppercase;
   display: flex;
+
+  @media (max-width: 1010px) {
+    flex-direction: column;
+  }
 `;
