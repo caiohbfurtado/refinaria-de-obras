@@ -25,6 +25,14 @@ export const Container = styled.button.attrs({ type: 'button' })`
       color: blue;
     `}
 
+  ${({ smaller }) =>
+    smaller &&
+    css`
+      border: 1px solid blue;
+      color: blue;
+      height: 30px;
+    `}
+
   ${({ color }) =>
     color &&
     css`
@@ -37,6 +45,18 @@ export const Container = styled.button.attrs({ type: 'button' })`
       &:hover {
         background: ${darken(0.03, 'blue')};
         color: #fff;
+      }
+    `}
+
+    ${({ disabled }) =>
+    disabled &&
+    css`
+      background: grey;
+      cursor: default;
+
+      &:hover {
+        background: grey;
+        border: none;
       }
     `}
 `;
