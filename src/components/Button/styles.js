@@ -18,6 +18,13 @@ export const Container = styled.button.attrs({ type: 'button' })`
     color: blue;
   }
 
+  ${({ selected }) =>
+    selected &&
+    css`
+      border: 1px solid blue;
+      color: blue;
+    `}
+
   ${({ color }) =>
     color &&
     css`

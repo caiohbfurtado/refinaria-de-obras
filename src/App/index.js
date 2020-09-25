@@ -15,8 +15,16 @@ function App() {
         <Title>Pesquisar</Title>
         <S.Subtitle>O que deseja buscar?</S.Subtitle>
         <S.Buttons>
-          <Button title="Filmes" onClick={() => setType('movie')} />
-          <Button title="séries" onClick={() => setType('series')} />
+          <Button
+            title="Filmes"
+            onClick={() => setType('movie')}
+            selected={type === 'movie'}
+          />
+          <Button
+            title="séries"
+            onClick={() => setType('series')}
+            selected={type === 'series'}
+          />
         </S.Buttons>
         <S.Input
           placeholder="Informe o título da obra"
