@@ -15,12 +15,23 @@ export const Container = styled.div`
   display: flex;
   min-height: 100%;
   flex: 1;
+
+  @media (max-width: 850px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 export const ContainerSearch = styled.div`
   height: 100%;
   width: 350px;
   padding: 20px 10px;
+
+  @media (max-width: 850px) {
+    width: 90%;
+    border-bottom: 1px solid #d1d1d1;
+  }
 `;
 
 export const ResultsContainer = styled.div`
@@ -29,6 +40,11 @@ export const ResultsContainer = styled.div`
   padding: 20px 20px;
   flex-direction: column;
   border-left: 1px solid #d1d1d1;
+
+  @media (max-width: 850px) {
+    width: 90%;
+    border: none;
+  }
 `;
 
 export const Subtitle = styled.p`
@@ -53,8 +69,12 @@ export const Input = styled.input.attrs(({ placeholder, value, onChange }) => ({
   padding: 10px;
   background: transparent;
   outline: none;
-  border: 1px solid #000;
+  border: 1px solid #aaa;
   margin-bottom: 15px;
+
+  &:focus {
+    border: 1px solid ${({ theme }) => theme.palette.primary.main};
+  }
 `;
 
 export const List = styled.div`
@@ -70,9 +90,9 @@ export const Footer = styled.div`
 `;
 
 export const Button = styled.button.attrs({ type: 'button' })`
-  width: 160px;
+  width: 50px;
   height: 30px;
-  background: blue;
+  background: ${({ theme }) => theme.palette.primary.main};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -84,12 +104,12 @@ export const Button = styled.button.attrs({ type: 'button' })`
   margin: 0 10px;
 
   svg {
-    font-size: 16px;
+    font-size: 32px;
     margin-top: 2px;
   }
 
   &:hover {
-    background: ${darken(0.03, 'blue')};
+    background: ${({ theme }) => darken(0.03, theme.palette.primary.main)};
   }
 
   ${({ disabled }) =>
@@ -108,6 +128,10 @@ export const Button = styled.button.attrs({ type: 'button' })`
 export const Total = styled.span`
   display: ${({ total }) => (total ? 'flex' : 'none')};
   margin-left: 10px;
+
+  @media (max-width: 1010px) {
+    margin: 10px 0 0;
+  }
 `;
 
 export const NoResults = styled.h3`

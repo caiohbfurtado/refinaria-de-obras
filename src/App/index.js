@@ -7,6 +7,8 @@ import api from '../services/api';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import ItemResult from '../components/ItemResult';
+import Modal from '../components/Modal';
+import Box from '../components/BoxModal';
 
 import * as S from './styles';
 
@@ -17,12 +19,14 @@ function App() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState('');
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [idCurr, setIdCurr] = useState(null);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       await api
-        .get(`${title}&plot=short&type=${type}&page=${page}`)
+        .get(`?apikey=f3bf5049&s=${title}&plot=short&type=${type}&page=${page}`)
         .then((res) => {
           setLoading(false);
           if (res.data.Search) {
@@ -35,20 +39,36 @@ function App() {
     })();
   }, [page]);
 
+  const viewDetails = async (id) => {
+    setModal(true);
+    setIdCurr(id);
+  };
+
+  const closeDetails = () => {
+    setModal(false);
+    setIdCurr(null);
+  };
+
   const handleSearch = async () => {
     setLoading(true);
     await api
-      .get(`${title}&plot=short&type=${type}&page=3`)
+      .get(`?apikey=f3bf5049&s=${title}&plot=short&type=${type}&page=1`)
       .then((res) => {
         setLoading(false);
         setFilms(res.data.Search);
         setTotal(res.data.totalResults);
+        setPage(1);
       })
       .catch(() => setLoading(false));
   };
 
   return (
     <S.Container>
+      {modal && (
+        <Modal>
+          <Box curr={idCurr} onClick={closeDetails} />
+        </Modal>
+      )}
       <S.ContainerSearch>
         <Title>Pesquisar</Title>
         <S.Subtitle>O que deseja buscar?</S.Subtitle>
@@ -97,6 +117,7 @@ function App() {
                       title={item.Title}
                       year={item.Year}
                       key={item.imdbID}
+                      onClick={() => viewDetails(item.imdbID)}
                     />
                   ))}
               </S.List>
@@ -109,7 +130,6 @@ function App() {
                   onClick={() => setPage(page - 1)}
                 >
                   <MdKeyboardArrowLeft />
-                  Página Anterior
                 </S.Button>
 
                 <p>
@@ -120,7 +140,7 @@ function App() {
                   disabled={page >= Math.ceil(Number(total) / 10)}
                   onClick={() => setPage(page + 1)}
                 >
-                  Próxima página <MdKeyboardArrowRight />
+                  <MdKeyboardArrowRight />
                 </S.Button>
               </S.Footer>
             )}
